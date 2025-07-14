@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Cake Blowout</title>
+  <style>
+    html, body {
+      touch-action: manipulation;
+    }
+    body {
+      background: #ffd5ec;
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    #start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #ffeef7;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #start-screen h1 {
+      font-size: 40px;
+      color: #b30059;
+    }
+    #start-screen button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 20px;
+      background-color: #b30059;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #booo-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #ffeef7;
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #b30059;
+    }
+
+    .banner {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #b30059;
+      background: linear-gradient(90deg, #fff, #ffcce5, #fff);
+      padding: 15px 0;
+      border-top: 4px dashed #ff69b4;
+      border-bottom: 4px dashed #ff69b4;
+      z-index: 10;
+    }
+    .cake {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      margin-top: 120px;
+    }
+    .tier {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #3e9ecf;
+      border-radius: 10px;
+      box-shadow: inset 0 -10px #fff8f8, 0 0 10px #0005;
+    }
+    .tier.bottom { height: 100px; }
+    .tier.top {
+      height: 60px;
+      width: 60%;
+      left: 20%;
+      bottom: 100px;
+      background: #3e9ecf;
+    }
+    .candle {
+      position: absolute;
+      width: 12px;
+      height: 40px;
+      background: repeating-linear-gradient(45deg, #f77, #f77 5px, #ffc 5px, #ffc 10px);
+      border-radius: 2px;
+      top: -45px;
+    }
+    .tier.top .candle:nth-child(1) { left: 10%; }
+    .tier.top .candle:nth-child(2) { left: 30%; }
+    .tier.top .candle:nth-child(3) { left: 50%; }
+    .tier.top .candle:nth-child(4) { left: 70%; }
+    .flame {
+      width: 10px;
+      height: 20px;
+      background: radial-gradient(ellipse at center, #ff0 0%, #f00 80%);
+      border-radius: 50%;
+      position: absolute;
+      top: -25px;
+      left: 1px;
+      animation: flicker 0.2s infinite;
+    }
+    @keyframes flicker {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    .wish-text {
+      position: absolute;
+      bottom: 30px;
+      font-size: 28px;
+      color: #b30059;
+      font-weight: bold;
+      animation: pop 1.5s infinite ease-in-out;
+    }
+    @keyframes pop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .letter {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 300px;
+      height: 180px;
+      background: #fff;
+      border: 2px solid #b30059;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 999;
+      transition: transform 0.5s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background-image: linear-gradient(to bottom right, #fff, #ffe6f2);
+    }
+    .letter::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      width: 0;
+      height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-bottom: 20px solid #fff0f5;
+    }
+    .letter.open {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .letter::after {
+      content: "Click to Open";
+      position: absolute;
+      bottom: 10px;
+      font-size: 14px;
+      color: #b30059;
+    }
+    .paper {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 360px;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: #fff;
+      padding: 20px;
+      font-size: 16px;
+      color: #b30059;
+      border: 2px solid #b30059;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      text-align: left;
+      line-height: 1.6;
+      white-space: pre-line;
+      z-index: 1000;
+    }
+    .paper .close-btn {
+      margin-top: 20px;
+      display: block;
+      background: #b30059;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .paper.show {
+      display: block;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -40%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    canvas#confetti-canvas {
+      position: fixed;
+      pointer-events: none;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <h1>ARE YOU READY??</h1>
+    <button onclick="startExperience(true)">Yes</button>
+    <button onclick="startExperience(false)">No</button>
+  </div>
+  <div id="booo-screen">Booooo tooooo lateeee hehe</div>
+  <audio id="birthday-music" src="happy-birthday-music-300687.mp3" preload="auto" loop></audio>
+  <audio id="yay-sound" src="yay-6326.mp3" preload="auto"></audio>
+  <div class="banner">🎉 Happy 18th Birthday Babe 🎉</div>
+  <div class="cake">
+    <div class="tier bottom"></div>
+    <div class="tier top">
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+      <div class="candle"><div class="flame"></div></div>
+    </div>
+  </div>
+  <div class="wish-text">Make a wish!</div>
+  <div class="letter" id="letter"></div>
+  <div class="paper" id="paper">
+    <div id="typed-message"></div>
+    <button class="close-btn" onclick="closeLetter()">Close</button>
+  </div>
+  <canvas id="confetti-canvas"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const flames = document.querySelectorAll('.flame');
+    const letter = document.getElementById('letter');
+    const paper = document.getElementById('paper');
+    const typedMessage = document.getElementById('typed-message');
+    const yaySound = document.getElementById('yay-sound');
+    const birthdayMusic = document.getElementById('birthday-music');
+    birthdayMusic.volume = 0.7;
+    yaySound.volume = 0.7;
+    let blown = false;
+    let micStarted = false;
+    const message = `Happy Birthday to My Favorite Hooman,\n\nTo the one who makes my heart race faster than your dream car,\nWho's more purr-fect than any cat meme (and just as adorable),\nWhose love for tech is only rivaled by your love for me...\n\nMay your birthday be as bright as your blue LED setups,\nAs smooth as your favorite car's gear shifts,\nAnd as endlessly joyful as a cat with a new cardboard box!\n\nThank you for being my favorite software update, my forever co-pilot, and the reason I smile every day. Here's to another year of adventures, cuddles, and shared passions. \n\nBlow out your candles—I wish you every happiness this year!\nI loveeeeeeeeeeeee youuuuuuuuuuuu\n\n- Kavya`;
+    function blowOutCandles() {
+      if (blown || !micStarted) return;
+      blown = true;
+      flames.forEach(f => f.style.display = 'none');
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const confetti = window.confetti.create(canvas, { resize: true });
+      confetti({ particleCount: 150, spread: 120, origin: { y: 0.6 } });
+      yaySound.play();
+      letter.classList.add('open');
+    }
+    letter.addEventListener('click', () => {
+      typedMessage.innerHTML = '';
+      paper.classList.add('show');
+      let index = 0;
+      function typeChar() {
+        if (index < message.length) {
+          typedMessage.innerHTML += message[index++];
+          setTimeout(typeChar, 20);
+        }
+      }
+      typeChar();
+    });
+    function closeLetter() {
+      paper.classList.remove('show');
+      letter.classList.remove('open');
+      flames.forEach(f => f.style.display = 'block');
+      blown = false;
+    }
+    function startExperience(yes) {
+      document.getElementById('start-screen').style.display = 'none';
+      if (!yes) {
+        document.getElementById('booo-screen').style.display = 'flex';
+        setTimeout(() => document.getElementById('booo-screen').style.display = 'none', 2000);
+      }
+      birthdayMusic.play();
+      startMicBlowDetection();
+    }
+    async function startMicBlowDetection() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const ctx = new AudioContext();
+        const mic = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        mic.connect(analyser);
+        analyser.fftSize = 512;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        micStarted = true;
+        function detect() {
+          analyser.getByteFrequencyData(dataArray);
+          const vol = dataArray.reduce((a, b) => a + b) / dataArray.length;
+          if (vol > 30) blowOutCandles();
+          requestAnimationFrame(detect);
+        }
+        detect();
+      } catch (e) {
+        console.warn('Mic access denied:', e);
+      }
+    }
+  </script>
+</body>
+</html>
